@@ -22,9 +22,10 @@ void BuildPhrase()
 {
 	Bar* tmp = new Bar();
 	Bar* tmp2 = new Bar();
-	Note* MultiNotes[] = {new Note(NoteLength::Sixteenth, 440, NoteIndicator::Legato),
-						 new Note(NoteLength::Sixteenth, 440, NoteIndicator::Legato),
-						 new Note(NoteLength::Sixteenth, 440, NoteIndicator::Legato)};
+	Note* MultiNotes[] = {new Note(NoteLength::Sixteenth, 445, NoteIndicator::Legato),
+		new Note(NoteLength::Sixteenth, 446, NoteIndicator::Legato),
+		new Note(NoteLength::Sixteenth, 446, NoteIndicator::Legato),
+		new Note(NoteLength::Sixteenth, 447, NoteIndicator::Legato) };
 	tmp->add(new Note(NoteLength::Eighth, 440, NoteIndicator::Legato));
 	tmp->add(new Note(NoteLength::Eighth, 440, NoteIndicator::Legato));
 	tmp->add(new Note(NoteLength::Eighth, 440, NoteIndicator::Legato));
@@ -32,8 +33,8 @@ void BuildPhrase()
 	tmp->add(new Note(NoteLength::Eighth, 440, NoteIndicator::Legato));
 	tmp->add(new Note(NoteLength::Eighth, 440, NoteIndicator::Legato));
 	
-	tmp2->add(MultiNotes, 3, NoteLength::Eight);
-	tmp2->add(new Note(NoteLength::Eighth, 440, NoteIndicator::Legato));
+	tmp2->add(MultiNotes, 4, NoteLength::EightDot);
+	tmp2->add(new Note(NoteLength::EightDot, 440, NoteIndicator::Legato));
 }
 void initSound()
 {

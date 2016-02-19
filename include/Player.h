@@ -14,7 +14,7 @@ enum class WaveConst : int
     SampleRate = 44100
 };
 
-enum class NoteIndicator : int
+enum class NoteIndicator
 {
     Accent, 
     Slur, 
@@ -27,7 +27,7 @@ enum class NoteIndicator : int
     Sforzando    
 };
 
-enum class PhraseIndicator : int
+enum class PhraseIndicator
 {
     Crescendo, 
     Decrescendo, 
@@ -36,7 +36,7 @@ enum class PhraseIndicator : int
     Stringendo    
 };
 
-enum class DynamicIndicator : int
+enum class DynamicIndicator
 {
     Pianisisimo, 
     Pianisimo, 

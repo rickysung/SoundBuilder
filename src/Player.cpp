@@ -41,12 +41,12 @@ int gcd(int p, int q)
 }
 void Bar::add(Note* note)
 {
-	int div = static_cast<int>(Bar::UnitNote_Default);
-	int mult = static_cast<int>(note->length);
-	int g = gcd(div, mult);
-	mult /= g;
-	div /= g;
-	int l = div*division / gcd(div, division);
+	int divider = static_cast<int>(Bar::UnitNote_Default);
+	int multiplier = static_cast<int>(note->length);
+	int g = gcd(divider, multiplier);
+	multiplier /= g;
+	divider /= g;
+	int l = divider*division / gcd(divider, division);
 	int mag;
 	mag = l/division;
 	UnitCount *= mag;
@@ -54,23 +54,24 @@ void Bar::add(Note* note)
 	{
 		(*it)->logicalLength *= mag;
 	}
-	mult *= l/div;
+	multiplier *= l/divider;
 	division = l;
 	note->myBar = (this);
-	note->logicalLength = mult;
-	(*this).UnitCount += mult;
+	note->logicalLength = multiplier;
+	(*this).UnitCount += multiplier;
 	Notes.push_back(note);
 }
 Bar::Bar(double ul, NoteLength un) :  UnitCount(0), UnitLength(ul), UnitNote(un), division(1){}
 void Bar::add(Note* note[], int length, NoteLength realLength)
 {
-	int div = static_cast<int>(Bar::UnitNote_Default);
-	int mult = static_cast<int>(realLength);
+	int divider = static_cast<int>(Bar::UnitNote_Default);
+	int multiplier = static_cast<int>(realLength);
 	int sum = 0;
-	int g = gcd(div, mult);
+	int n;
+	int g = gcd(divider, multiplier);
 	int i;
-	mult/=g;
-	div/=g;
+	multiplier/=g;
+	divider/=g;
 	g = static_cast<int>(note[0]->length);
 	for(i=0 ; i<length ; i++)
 	{
@@ -78,15 +79,17 @@ void Bar::add(Note* note[], int length, NoteLength realLength)
 		sum += static_cast<int>(note[i]->length);
 	}
 	sum/=g;
-	mult = sum*mult / gcd(sum,mult);
-	div = div*sum / gcd(sum,mult);
+	n = gcd(sum, multiplier);
+	multiplier = multiplier * sum / n;
+	divider = divider * sum / n;
 	for(i=0 ; i<length ; i++)
 	{
 		note[i]->myBar = (this);
-		note[i]->logicalLength = (static_cast<int>(note[i]->length)/(sum*g))*mult;
-		(*this).UnitCount += (static_cast<int>(note[i]->length)/(sum*g))*mult;
+		note[i]->logicalLength = static_cast<int>(note[i]->length)*multiplier / (sum*g);
+		(*this).UnitCount += static_cast<int>(note[i]->length)*multiplier / (sum*g);
 		Notes.push_back(note[i]);
 	}
+	division = divider;
 }
 NoteLength Bar::UnitNote_Default;
 double Bar::UnitLength_Default;
@@ -104,25 +107,25 @@ Renderer* Note::getRenderredSound(Instrument& inst, double val, double diff)
     switch(length)
     {
     case NoteLength::Whole:
-        soundlength = static_cast<int>(WaveConst::SampleRate) * 2;
+        soundlength = static_cast<int>(static_cast<double>(WaveConst::SampleRate) * 2);
         break;
     case NoteLength::Half:
-        soundlength = static_cast<int>(WaveConst::SampleRate) * 1;
+        soundlength = static_cast<int>(static_cast<double>(WaveConst::SampleRate) * 1);
         break;
     case NoteLength::Quater:
-        soundlength = static_cast<int>(WaveConst::SampleRate) * 0.5;
+        soundlength = static_cast<int>(static_cast<double>(WaveConst::SampleRate) * 0.5);
         break;
     case NoteLength::Eighth:
-        soundlength = static_cast<int>(WaveConst::SampleRate) * 0.25;
+        soundlength = static_cast<int>(static_cast<double>(WaveConst::SampleRate) * 0.25);
         break;
     case NoteLength::Sixteenth:
-        soundlength = static_cast<int>(WaveConst::SampleRate) * 0.125;
+        soundlength = static_cast<int>(static_cast<double>(WaveConst::SampleRate) * 0.125);
         break;
     }
     if(frequency == 0)
         resizedLength = 1;
     else
-        resizedLength = static_cast<int>(WaveConst::SampleRate)/frequency;
+        resizedLength = static_cast<int>(static_cast<double>(WaveConst::SampleRate)/frequency);
     resized = sound->ResizeCurve(inst.Sample.SampleData, inst.Sample.SampleSize, resizedLength);
     for(i=0 ; i<resizedLength - 1 ; i++)
     {
@@ -157,7 +160,7 @@ Renderer* NoteGroup::getRenderredSound(Instrument& inst, double val, double diff
     return sound;
 }
 
-Note::Note(NoteLength len, double freq, NoteIndicator playtype = NoteIndicator::Legato) : AmplitudeCurve(len, Note::LinearLine), FrequencyCurve(len, Note::LinearLine)
+Note::Note(NoteLength len, double freq, NoteIndicator playtype = NoteIndicator::Legato) : AmplitudeCurve(static_cast<double>(len), Note::LinearLine), FrequencyCurve(static_cast<double>(len), Note::LinearLine)
 {
     length = len;
     frequency = freq;
