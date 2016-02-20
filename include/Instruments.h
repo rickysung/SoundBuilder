@@ -1,9 +1,10 @@
 class SampleSound
 {
+public:
+	static double* Sinusoidal(double);
     private:
-    static double* Sinusoidal(double);
     public:
-    SampleSound(int);
+    SampleSound(int, double*);
     const int SampleSize;
     double* SampleData;
 };
@@ -11,7 +12,7 @@ class SampleSound
 class NoiseSound
 {
     public:
-    NoiseSound(int);
+    NoiseSound(int, double*);
     const int NoiseSize;
     double* NoiseData;
 };
@@ -19,7 +20,7 @@ class NoiseSound
 class Instrument
 {
     public:
-    Instrument(int);
+    Instrument(int l, double*, double*);
     SampleSound Sample;
     NoiseSound Noise;
 };

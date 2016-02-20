@@ -5,6 +5,7 @@
 #include "Instruments.h"
 using namespace std;
 class Bar;
+class Line;
 class Phrase;
 class Note;
 class NoteGroup;
@@ -59,11 +60,14 @@ enum class NoteLength : int
 	QuaterDotDot = 14,
 	QuaterDot = 12,
     Quater = 8, 
+
 	EightDotDot = 7,
 	EightDot = 6,
-    Eighth = 4, 
+    Eighth = 4,
+
 	SixteenthDot = 3,
     Sixteenth = 2,
+
 	HalfSixteenth = 1
 };
 
@@ -77,29 +81,40 @@ class PlayCurve
 class Bar
 {
 	public:
-		vector<Note*> Notes;
-		void add(Note* note);
-		void add(Note** note, int, NoteLength);
 		NoteLength UnitNote;
+		Line** PlayLine;
+		const int InsNum;
 		int UnitCount;
 		int division;
 		double UnitLength;
-		Bar(double ul = Bar::UnitLength_Default, NoteLength un = Bar::UnitNote_Default);
+		
+		Bar(int ic, double ul = Bar::UnitLength_Default, NoteLength un = Bar::UnitNote_Default);
+
+
 		static NoteLength UnitNote_Default;
 		static double UnitLength_Default;
 };
+class Line
+{
+public:
+	Line(Bar*);
+	vector<Note*> Notes;
+	void add(Note* note);
+	void add(vector<Note*> note, NoteLength);
+	Bar* Parent;
+};
+
 class Phrase
 {
     public:
     virtual double getLength() = 0;
-    virtual Renderer* getRenderredSound(Instrument&, double, double) = 0;
+    virtual Renderer* getRenderredSound(Instrument&) = 0;
     virtual ~Phrase(){};
 };
-
 class Note : public Phrase
 {
 public:
-    explicit Note(NoteLength len, double freq, NoteIndicator playtype);
+    explicit Note(NoteGroup*, NoteLength len, double freq, NoteIndicator playtype = NoteIndicator::Legato);
     
     double frequency;
     NoteLength length;
@@ -107,12 +122,13 @@ public:
     PlayCurve AmplitudeCurve;
     PlayCurve FrequencyCurve;
     double getLength();
-    Renderer* getRenderredSound(Instrument&, double, double);
+    Renderer* getRenderredSound(Instrument&);
     
-	int realLength;
+	double realLength;
 	double rhythmicHeight;
 	double harmonicHeight;
-	Bar* myBar;
+	Line* myLine;
+	int logicalLocation;
 	int logicalLength;
 private:
     static double LinearLine(double, double, double);
@@ -124,7 +140,7 @@ public:
     explicit NoteGroup(string);
     
     double getLength();
-    Renderer* getRenderredSound(Instrument&, double, double);
+    Renderer* getRenderredSound(Instrument&);
     PhraseIndicator phraseType;
     DynamicIndicator dynamicType;
     void add(Phrase* obj);
